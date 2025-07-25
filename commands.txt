@@ -1,0 +1,116 @@
+-------------------------------------------------------------------------------
+بخش 1
+
+Port 22
+Port 4280
+Port 3290
+Port 6040
+Port 3654
+Port 9546
+Port 1254
+-------------------------------------------------------------------------------
+بخش 2
+
+iptables -I INPUT -p tcp --dport 4280 -j ACCEPT
+iptables -I INPUT -p tcp --dport 3290 -j ACCEPT
+iptables -I INPUT -p tcp --dport 6040 -j ACCEPT
+iptables -I INPUT -p tcp --dport 3654 -j ACCEPT
+iptables -I INPUT -p tcp --dport 9546 -j ACCEPT
+iptables -I INPUT -p tcp --dport 1254 -j ACCEPT
+
+iptables -I OUTPUT -p tcp --sport 4280 -j ACCEPT
+iptables -I OUTPUT -p tcp --sport 3290 -j ACCEPT
+iptables -I OUTPUT -p tcp --sport 6040 -j ACCEPT
+iptables -I OUTPUT -p tcp --sport 3654 -j ACCEPT
+iptables -I OUTPUT -p tcp --sport 9546 -j ACCEPT
+iptables -I OUTPUT -p tcp --sport 1254 -j ACCEPT
+-------------------------------------------------------------------------------
+بخش 3
+
+apt install iptables-persistent
+-------------------------------------------------------------------------------
+بخش 4
+
+ss -tuln
+iptables -L -v -v
+-------------------------------------------------------------------------------
+بخش 5
+
+nano /usr/local/bin/block_duplicate_login.sh
+nano /usr/local/bin/iptables-save-restore.sh
+ls -la
+-------------------------------------------------------------------------------
+بخش 6
+
+crontab -e
+* * * * * /root/monitor_users/venv/bin/python3  /root/monitor_users/monitor_users_app.py
+@reboot /usr/local/bin/iptables-save-restore.sh restore
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+بخش 7
+
+nano /etc/systemd/system/iptables-save-before-shutdown.service
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+بخش 8
+
+nano /etc/pam.d/sshd
+auth required pam_exec.so /usr/local/bin/block_duplicate_login.sh
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+بخش 9
+
+adduser ashkan --shell /usr/sbin/nologin password:4280
+adduser m-reza --shell /usr/sbin/nologin password:3290
+adduser m-amin --shell /usr/sbin/nologin password:6040
+adduser shadi1 --shell /usr/sbin/nologin password:3654
+adduser shadi2 --shell /usr/sbin/nologin password:9546
+adduser shadi3 --shell /usr/sbin/nologin password:1254
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+بخش 10
+
+git clone --branch main --single-branch https://github.com/ashkanMogharab77/virtual_server.git
+apt install python3-venv
+python3 -m venv venv
+source venv/bin/activate
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+بخش 11
+
+docker run -d --name mysql-db -e MYSQL_ROOT_PASSWORD=aBc.123456 -e MYSQL_DATABASE=monitor_users_db -v ./db_content:/var/lib/mysql -p 3306:3306 mysql:5.7
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+بخش 12
+
+docker exec -it mysql-db /bin/bash
+mysql -u root -p  password:aBc.123456
+
+use monitor_users_db;
+CREATE TABLE users (
+id VARCHAR(30),
+password VARCHAR(30),
+chat_id VARCHAR(10),
+port VARCHAR(10),
+download_volume VARCHAR(50),
+upload_volume VARCHAR(50),
+PRIMARY KEY (id));
+
+insert into users values("ashkan","4280","7858487903","4280","0","0");
+insert into users values("m-reza","3290","782630417","3290","0","0");
+insert into users values("m-amin","6040","761217860","6040","0","0");
+insert into users values("shadi1","3654","557942793","3654","0","0");
+insert into users values("shadi2","9546","604815914","9546","0","0");
+insert into users values("shadi3","1254","767181974","1254","0","0");
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+بخش 13
+
+nano /etc/systemd/system/telegrambot.service
+systemctl daemon-reexec
+systemctl daemon-reload
+systemctl enable telegrambot.service
+systemctl is-enabled telegrambot.service
+systemctl start telegrambot.service
+systemctl status telegrambot.service
+
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------

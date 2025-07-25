@@ -1,0 +1,14 @@
+[Unit]
+Description=Telegram Bot Service
+After=network.target mysql.service
+
+[Service]
+Type=simple
+WorkingDirectory=/root/monitor_users
+ExecStart=/root/monitor_users/venv/bin/python3 bot.py
+Restart=always
+User=root
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target

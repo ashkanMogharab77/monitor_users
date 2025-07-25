@@ -1,0 +1,12 @@
+[Unit]
+Description=Save iptables rules with counters before shutdown/reboot
+DefaultDependencies=no
+Before=shutdown.target reboot.target halt.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/iptables-save-restore.sh save
+RemainAfterExit=true
+
+[Install]
+WantedBy=halt.target reboot.target shutdown.target
