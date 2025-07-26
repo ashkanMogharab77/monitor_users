@@ -38,6 +38,8 @@ iptables -L -v -v
 
 nano /usr/local/bin/block_duplicate_login.sh
 nano /usr/local/bin/iptables-save-restore.sh
+chmod +x /usr/local/bin/block_duplicate_login.sh
+chmod +x /usr/local/bin/iptables-save-restore.sh
 ls -la
 -------------------------------------------------------------------------------
 بخش 6
@@ -57,7 +59,8 @@ auth required pam_exec.so /usr/local/bin/block_duplicate_login.sh
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
 بخش 9
 
-adduser ashkan --shell /usr/sbin/nologin password:4280
+بعد از ایجاد کاربرپایین، ابتدا آن را در گروه sudo اضافه کرده و عدم دریافت پسورد برای این گروه را در visudo فراهم کرده  و سپس کلید عمومی دستگاه خود را در دایرکتوری .ssh و فایل authorized_keys مسیر home اضافه می کنیم
+adduser ashkan                           password:4280 
 adduser m-reza --shell /usr/sbin/nologin password:3290
 adduser m-amin --shell /usr/sbin/nologin password:6040
 adduser shadi1 --shell /usr/sbin/nologin password:3654
@@ -66,7 +69,7 @@ adduser shadi3 --shell /usr/sbin/nologin password:1254
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
 بخش 10
 
-git clone --branch main --single-branch https://github.com/ashkanMogharab77/virtual_server.git
+git clone --branch main --single-branch https://github.com/ashkanMogharab77/monitor_users.git
 apt install python3-venv
 python3 -m venv venv
 source venv/bin/activate
