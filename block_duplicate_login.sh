@@ -15,7 +15,7 @@ fi
 
 session_count=$(ps aux | awk -v u="$PAM_USER" '$1 == u && $0 ~ ("sshd: " u)' | wc -l)
 
-if [ "$session_count" -ge 2 ]; then
+if [ "$session_count" -ge 2 ] && [ "$PAM_USER" != "ashkan" ]; then
     exit 1
 fi
 

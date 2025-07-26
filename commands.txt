@@ -59,7 +59,7 @@ auth required pam_exec.so /usr/local/bin/block_duplicate_login.sh
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
 بخش 9
 
-بعد از ایجاد کاربرپایین، ابتدا آن را در گروه sudo اضافه کرده و عدم دریافت پسورد برای این گروه را در visudo فراهم کرده  و سپس کلید عمومی دستگاه خود را در دایرکتوری .ssh و فایل authorized_keys مسیر home اضافه می کنیم
+بعد از ایجاد کاربرپایین، ابتدا آن را در گروه sudo اضافه کرده و عدم دریافت پسورد برای این گروه را در visudo فراهم کرده و سپس کلید عمومی دستگاه خود را در دایرکتوری .ssh و فایل authorized_keys مسیر home کاربر root اضافه می کنیم
 adduser ashkan                           password:4280 
 adduser m-reza --shell /usr/sbin/nologin password:3290
 adduser m-amin --shell /usr/sbin/nologin password:6040
