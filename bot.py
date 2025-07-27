@@ -17,6 +17,7 @@ db_config = {
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
     keyboard = [
         [" اطلاعات اتصال", " میزان مصرف"],
         [" آیدی عددی", " راهنما"],
@@ -36,7 +37,7 @@ async def chatid(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def help(update: Update, context: ContextTypes.DEFAULT_TYPE):
     with open("help.mp4", "rb") as video_file:
-        await update.message.reply_video(video=video_file, caption="راهنمای اتصال با استفاده از V2BOX")
+        await update.message.reply_video(video=video_file, caption="راهنمای اتصال با استفاده از napsternetv")
 
 
 async def connection_info(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -66,20 +67,34 @@ async def status(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
     conn = mysql.connector.connect(**db_config)
     cursor = conn.cursor()
-    cursor.execute(
+    if chat_id == 7858487903:
+        cursor.execute(
+        "SELECT id, download_volume, upload_volume FROM users")
+        result = cursor.fetchall()
+        message = ""
+        for row in result:
+          id,download, upload = row
+          message+=(
+            f"کاربر: {id}\n"
+            f"دانلود: {download}B\n"
+            f"آپلود: {upload}B\n\n"
+        )
+    else:
+        cursor.execute(
         "SELECT download_volume, upload_volume FROM users WHERE chat_id = %s", (chat_id,))
-    result = cursor.fetchone()
-    cursor.close()
-    conn.close()
-    if result:
-        download, upload = result
-        message = (
+        result = cursor.fetchone()
+        if result:
+          download, upload = result
+          message = (
             f"مصرف شما:\n"
             f"دانلود: {download}B\n"
             f"آپلود: {upload}B"
         )
-    else:
-        message = "اطلاعاتی یافت نشد."
+        else:
+          message = "اطلاعاتی یافت نشد."
+
+    cursor.close()
+    conn.close()
 
     await update.message.reply_text(message)
 
