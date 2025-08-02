@@ -9,8 +9,6 @@ db_config = {
     'database': 'monitor_users_db',
 }
 
-THRESHOLD_BYTES = 150 * 1024 * 1024 * 1024
-
 
 def parse_size(size_str):
     size_str = size_str.strip().upper()
@@ -47,7 +45,13 @@ def update_volumes(cursor, user_id, port, download_volume, upload_volume):
     sql = "UPDATE users SET download_volume = %s, upload_volume = %s WHERE id = %s"
     cursor.execute(sql, (download_volume, upload_volume, user_id))
     total = parse_size(download_volume) + parse_size(upload_volume)
-    if total >= THRESHOLD_BYTES:
+
+    cursor.execute("SELECT threshold FROM users WHERE id = %s" ,(user_id,))
+    result = cursor.fetchone()
+    raw_threshold = result[0]
+    threshold = int(raw_threshold) * 1024 * 1024 * 1024
+
+    if total >= threshold:
         subprocess.call(
             f"sudo iptables -D INPUT -p tcp --dport {port} -j ACCEPT", shell=True)
         subprocess.call(
