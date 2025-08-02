@@ -4,7 +4,7 @@ import mysql.connector
 import subprocess
 
 # set this each month
-ip = "156.253.5.152"
+ip = "185.215.244.193"
 
 
 db_config = {
@@ -72,28 +72,33 @@ async def status(update: Update, context: ContextTypes.DEFAULT_TYPE):
     cursor = conn.cursor()
     if chat_id == 7858487903:
         cursor.execute(
-            "SELECT id, download_volume, upload_volume FROM users")
+            "SELECT id, threshold ,download_volume, upload_volume FROM users")
         result = cursor.fetchall()
         message = ""
         for row in result:
-            id, download, upload = row
+            id, threshold , download, upload = row
             cmd = f'ps aux | awk -v u="{id}" \'$1 == u && $0 ~ ("sshd: " u)\' | wc -l'
             session_count = subprocess.check_output(cmd, shell=True, text=True).strip()
 
             message += (
                 f"کاربر: {id}\n"
                 f"تعداد اتصال: {session_count}\n"
+                f"ترافیک مجاز {threshold}GB\n"
                 f"دانلود: {download}B\n"
                 f"آپلود: {upload}B\n\n"
             )
     else:
         cursor.execute(
-            "SELECT download_volume, upload_volume FROM users WHERE chat_id = %s", (chat_id,))
+            "SELECT id , threshold, download_volume, upload_volume FROM users WHERE chat_id = %s", (chat_id,))
         result = cursor.fetchone()
         if result:
-            download, upload = result
+            id, threshold , download, upload = result
+            cmd = f'ps aux | awk -v u="{id}" \'$1 == u && $0 ~ ("sshd: " u)\' | wc -l'
+            session_count = subprocess.check_output(cmd, shell=True, text=True).strip()
             message = (
                 f"مصرف شما:\n"
+                f"تعداد اتصال: {session_count}\n"
+                f"ترافیک مجاز {threshold}GB\n"
                 f"دانلود: {download}B\n"
                 f"آپلود: {upload}B"
             )
