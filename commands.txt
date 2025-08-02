@@ -8,6 +8,8 @@ Port 6040
 Port 3654
 Port 9546
 Port 1254
+Port 1560
+Port 1911
 -------------------------------------------------------------------------------
 بخش 2
 
@@ -17,6 +19,9 @@ iptables -I INPUT -p tcp --dport 6040 -j ACCEPT
 iptables -I INPUT -p tcp --dport 3654 -j ACCEPT
 iptables -I INPUT -p tcp --dport 9546 -j ACCEPT
 iptables -I INPUT -p tcp --dport 1254 -j ACCEPT
+iptables -I INPUT -p tcp --dport 1560 -j ACCEPT
+iptables -I INPUT -p tcp --dport 1911 -j ACCEPT
+
 
 iptables -I OUTPUT -p tcp --sport 4280 -j ACCEPT
 iptables -I OUTPUT -p tcp --sport 3290 -j ACCEPT
@@ -24,6 +29,8 @@ iptables -I OUTPUT -p tcp --sport 6040 -j ACCEPT
 iptables -I OUTPUT -p tcp --sport 3654 -j ACCEPT
 iptables -I OUTPUT -p tcp --sport 9546 -j ACCEPT
 iptables -I OUTPUT -p tcp --sport 1254 -j ACCEPT
+iptables -I OUTPUT -p tcp --sport 1560 -j ACCEPT
+iptables -I OUTPUT -p tcp --sport 1911 -j ACCEPT
 -------------------------------------------------------------------------------
 بخش 3
 
@@ -66,6 +73,8 @@ adduser m-amin --shell /usr/sbin/nologin password:6040
 adduser shadi1 --shell /usr/sbin/nologin password:3654
 adduser shadi2 --shell /usr/sbin/nologin password:9546
 adduser shadi3 --shell /usr/sbin/nologin password:1254
+adduser baran --shell /usr/sbin/nologin password:1560
+adduser mohi --shell /usr/sbin/nologin password:1911
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
 بخش 10
 
@@ -73,7 +82,6 @@ git clone --branch main --single-branch https://github.com/ashkanMogharab77/moni
 apt install python3-venv
 python3 -m venv venv
 source venv/bin/activate
-
 ------------------------------------------------------------------------------------------------------------------------------------------------------------
 بخش 11
 
@@ -91,17 +99,19 @@ id VARCHAR(30),
 password VARCHAR(30),
 chat_id VARCHAR(10),
 port VARCHAR(10),
+threshold VARCHAR(50),
 download_volume VARCHAR(50),
 upload_volume VARCHAR(50),
 PRIMARY KEY (id));
 
-insert into users values("ashkan","4280","7858487903","4280","0","0");
-insert into users values("m-reza","3290","782630417","3290","0","0");
-insert into users values("m-amin","6040","761217860","6040","0","0");
-insert into users values("shadi1","3654","557942793","3654","0","0");
-insert into users values("shadi2","9546","604815914","9546","0","0");
-insert into users values("shadi3","1254","767181974","1254","0","0");
-
+insert into users values("ashkan","4280","7858487903","4280","50","0","0");
+insert into users values("m-reza","3290","782630417","3290","150","0","0");
+insert into users values("m-amin","6040","761217860","6040","150","0","0");
+insert into users values("shadi1","3654","557942793","3654","150","0","0");
+insert into users values("shadi2","9546","604815914","9546","150","0","0");
+insert into users values("shadi3","1254","767181974","1254","150","0","0");
+insert into users values("baran","1560","7254606624","1560","50","0","0");
+insert into users values("mohi","1911","1189644089","1911","30","0","0");
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
 بخش 13
 
@@ -112,8 +122,4 @@ systemctl enable telegrambot.service
 systemctl is-enabled telegrambot.service
 systemctl start telegrambot.service
 systemctl status telegrambot.service
-
-
-
-
 ------------------------------------------------------------------------------------------------------------------------------------------------------
