@@ -1,0 +1,94 @@
+بخش 1
+
+nano /etc/ssh/sshd_config
+	- add just this port to it
+		Port 6040
+
+	- enable usePAM with UsePAM yes
+	- uncomment KbdInteractiveAuthentication and set it no
+systemctl daemon-reexec
+systemctl daemon-reload
+systemctl restart ssh.socket
+systemctl restart ssh
+-------------------------------------------------------------------------------
+بخش 2
+
+ss -tuln
+-------------------------------------------------------------------------------
+بخش 3
+
+nano /usr/local/bin/block_duplicate_login.sh
+chmod +x /usr/local/bin/block_duplicate_login.sh
+ls -la
+-------------------------------------------------------------------------------
+بخش 4
+
+nano /etc/pam.d/sshd
+auth required pam_exec.so /usr/local/bin/block_duplicate_login.sh
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+بخش 5
+
+بعد از ایجاد کاربرپایین، ابتدا آن را در گروه sudo اضافه کرده و عدم دریافت پسورد برای این گروه را در visudo فراهم کرده و سپس کلید عمومی دستگاه خود را در دایرکتوری .ssh و فایل authorized_keys مسیر home کاربر root اضافه می کنیم
+adduser ashkan                           
+adduser m-reza --shell /usr/sbin/nologin 
+adduser m-amin --shell /usr/sbin/nologin 
+adduser shadi1 --shell /usr/sbin/nologin 
+adduser shadi2 --shell /usr/sbin/nologin 
+adduser shadi3 --shell /usr/sbin/nologin 
+adduser baran  --shell /usr/sbin/nologin 
+adduser mohi   --shell /usr/sbin/nologin 
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+بخش 6
+
+git clone --branch main --single-branch https://github.com/ashkanMogharab77/monitor_users.git
+apt install python3-venv
+python3 -m venv venv
+source venv/bin/activate
+install libraries of requirements.txt with pip instal 
+deactivate
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+بخش 7
+
+docker run -d --name mysql-db -e MYSQL_ROOT_PASSWORD=aBc.123456 -e MYSQL_DATABASE=monitor_users_db -v ./db_content:/var/lib/mysql -p 3306:3306 mysql:5.7
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+بخش 8
+
+docker exec -it mysql-db /bin/bash
+mysql -u root -p  password:aBc.123456
+
+use monitor_users_db;
+CREATE TABLE users (
+id VARCHAR(30),
+password VARCHAR(30),
+chat_id VARCHAR(10),
+PRIMARY KEY (id));
+
+insert into users values("ashkan","9764516","7858487903");
+insert into users values("m-reza","3883267","782630417");
+insert into users values("m-amin","1697862","761217860");
+insert into users values("shadi1","7142844","557942793");
+insert into users values("shadi2","2676755","604815914");
+insert into users values("shadi3","5882597","767181974");
+insert into users values("baran", "8163906","7254606624");
+insert into users values("mohi",  "6501882","1189644089");
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+بخش 13
+
+nano /etc/systemd/system/telegrambot.service
+systemctl daemon-reexec
+systemctl daemon-reload
+touch blocked_users_ips.txt in /root/monitor_users
+apt install at
+systemctl start atd
+systemctl enable atd
+systemctl status atd
+systemctl start telegrambot.service
+systemctl enable telegrambot.service
+systemctl status telegrambot.service
+------------------------------------------------------------------------------------------------------------------------------------------------------
+بخش 14 
+apt install ufw
+ufw enable
+ufw allow 6040/tcp
+ufw status numbered
